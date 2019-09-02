@@ -1,0 +1,2 @@
+http\://www.wm-remoting.com/schema/wm-service=com.michaelwang.spring.WmRemoteServiceNamespaceHandler
+http\://www.wm-remoting.com/schema/wm-reference=com.michaelwang.spring.WmRemoteReferenceNamespaceHandler

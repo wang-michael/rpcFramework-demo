@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:WmServer="http://www.wm-remoting.com/schema/wm-service"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.wm-remoting.com/schema/wm-service
+       http://www.wm-remoting.com/schema/wm-service.xsd">
+
+    <!-- 发布远程服务 -->
+    <bean id="helloService" class="com.michaelwang.test.HelloServiceImpl"/>
+    <bean id="helloServiceAnother" class="com.michaelwang.test.HelloServiceImplAnother"/>
+    <bean id="heiheiServiceTemp" class="com.michaelwang.test.HeiheiServiceImpl"/>
+
+    <!-- weight用来决定客户端加权负载均衡策略中使用的权重 -->
+    <WmServer:service id="helloServiceRegister"
+                        interface="com.michaelwang.test.HelloService"
+                        ref="helloService"
+                        groupName="default"
+                        weight="2"
+                        appKey="wm"
+                        workerThreads="100"
+                        serverPort="8082"
+                        timeout="600"/>
+
+    <!-- weight用来决定客户端加权负载均衡策略中使用的权重 -->
+    <WmServer:service id="helloServiceRegisterAnother"
+                      interface="com.michaelwang.test.HelloService"
+                      ref="helloServiceAnother"
+                      groupName="default"
+                      weight="6"
+                      appKey="wm"
+                      workerThreads="100"
+                      serverPort="8083"
+                      timeout="600"/>
+
+    <!-- 每个客户端-每个服务端对于同一个端口下的服务共享一个长连接，不同端口使用不同的长连接 -->
+    <!-- 不同服务可以注册到不同的端口，多个端口共用一个NioEventLoopGroup -->
+    <WmServer:service id="heiheiServiceRegisterTemp"
+                        interface="com.michaelwang.test.HeiheiService"
+                        ref="heiheiServiceTemp"
+                        groupName="default"
+                        weight="2"
+                        appKey="wm"
+                        workerThreads="100"
+                        serverPort="8083"
+                        timeout="600"/>
+
+
+</beans>
