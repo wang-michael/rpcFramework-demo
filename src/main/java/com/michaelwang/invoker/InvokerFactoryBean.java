@@ -1,5 +1,6 @@
 package com.michaelwang.invoker;
 
+import java.sql.DriverManager;
 import java.util.List;
 import java.util.Map;
 
@@ -62,11 +63,11 @@ public class InvokerFactoryBean implements FactoryBean, InitializingBean {
         System.out.println("InvokerFactoryBean: " + this);
         //获取服务注册中心
         IRegisterCenter4Invoker registerCenter4Consumer = RegisterCenter.singleton();
-
         if (!registerCenter4Consumer.isInit()) {
             synchronized (registerCenter4Consumer) {
                 if (!registerCenter4Consumer.isInit()) {
                     //初始化服务提供者列表到本地缓存
+                    // TODO : 根据remoteAppKey + groupName区分指定组的服务来进行调用的功能尚未实现，目前是根据interface来调用某个服务的
                     registerCenter4Consumer.initProviderMap(remoteAppKey, groupName);
                     //初始化Netty Channel
                     Map<String, List<ProviderService>> providerMap = registerCenter4Consumer

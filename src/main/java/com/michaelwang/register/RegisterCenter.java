@@ -38,6 +38,7 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
     private static final Map<String, List<ProviderService>> providerServiceMap = new ConcurrentHashMap<>();
     /**
      * 服务端ZK服务元信息,选择服务(第一次直接从ZK拉取,后续由ZK的监听机制主动更新)
+     * 服务消费者从此map中获取某个接口下的所有服务提供者，key值为服务提供者接口名，value为提供当前接口对应的服务的所有服务提供者
      */
     private static final Map<String, List<ProviderService>> serviceMetaDataMap4Consume = new ConcurrentHashMap<>();
 
@@ -277,17 +278,20 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
         for (String serviceName : providerServices) {
             String servicePath = providePath + "/" + serviceName + "/" + PROVIDER_TYPE;
             List<String> ipPathList = zkClient.getChildren(servicePath);
+
+            List<ProviderService> providerServiceList = providerServiceMap.get(serviceName);
+
             for (String ipPath : ipPathList) {
+                if (providerServiceList == null) {
+                    providerServiceList = Lists.newArrayList();
+                }
+
                 String serverIp = StringUtils.split(ipPath, "|")[0];
                 String serverPort = StringUtils.split(ipPath, "|")[1];
                 int weight = Integer.parseInt(StringUtils.split(ipPath, "|")[2]);
                 int workerThreads = Integer.parseInt(StringUtils.split(ipPath, "|")[3]);
                 String group = StringUtils.split(ipPath, "|")[4];
 
-                List<ProviderService> providerServiceList = providerServiceMap.get(serviceName);
-                if (providerServiceList == null) {
-                    providerServiceList = Lists.newArrayList();
-                }
                 ProviderService providerService = new ProviderService();
 
                 try {
@@ -302,9 +306,8 @@ public class RegisterCenter implements IRegisterCenter4Invoker, IRegisterCenter4
                 providerService.setWorkerThreads(workerThreads);
                 providerService.setGroupName(group);
                 providerServiceList.add(providerService);
-
-                providerServiceMap.put(serviceName, providerServiceList);
             }
+            providerServiceMap.put(serviceName, providerServiceList);
 
             //监听注册服务的变化,同时更新数据到本地缓存
             zkClient.subscribeChildChanges(servicePath, new IZkChildListener() {
