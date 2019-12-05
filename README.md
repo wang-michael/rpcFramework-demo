@@ -1,5 +1,5 @@
 # rpcFramework-demo
-模仿Dubbo思想，自己实现的一个分布式RPC框架的Demo  
+模仿Dubbo思想，自己实现的一个分布式RPC框架的Demo。没有很详细的写文档，感兴趣的同学可以阅读《从零开始写分布式服务框架》 by 李业兵一书，我是基于作者提供的源码的基础上进行改进的。
 
 关键实现：  
 1）通过Spring自定义标签+FactoryBean的方式使得框架可以与Spring框架结合使用  
