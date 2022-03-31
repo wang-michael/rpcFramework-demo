@@ -14,7 +14,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.version>4.0.9.RELEASE</spring.version>
+    <spring.version>5.3.18</spring.version>
     <aspectj.version>1.8.0</aspectj.version>
     <fastjson.version>1.2.12</fastjson.version>
     <lombok-maven.version>1.16.8.0</lombok-maven.version>
